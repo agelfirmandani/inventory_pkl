@@ -145,7 +145,6 @@ class C_perm_pembelian extends CI_Controller {
 			exit();
 		}
 	}
-	}
 	function add(){
 		$this->load->helper('url'); 
 		// load model dan form helper
