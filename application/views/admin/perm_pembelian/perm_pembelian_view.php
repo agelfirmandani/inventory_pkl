@@ -13,10 +13,12 @@
                                 
                             </h2>
                             <ul class="header-dropdown m-r--5">
+                            <!--<a href="<?php echo site_url('admin/C_perm_pembelian/add');?>" class="btn btn-primary"> Add </a>-->
+                                   
                             <button type="button" onclick="add_perm_pembelian()" class="btn btn-default waves-effect">
                                         <i class="material-icons">add_circle_outline</i><span class="icon-name">Data Permintaan Pembelian</span>
                                     </button>
-                                    <button type="button" onclick="reload_table()" class="btn btn-default waves-effect">
+                                     <button type="button" onclick="reload_table()" class="btn btn-default waves-effect">
                                         <i class="material-icons">autorenew</i><span class="icon-name">Reload</span>
                                     </button>
                             </ul>
@@ -57,6 +59,7 @@
 
 var save_method; //for save method string
 var table;
+var count = 0;
 
 $(document).ready(function () {
     //datatables
@@ -108,6 +111,88 @@ $(document).ready(function () {
         $(this).next().empty();
     });
 
+
+	$('#add').click(function(){
+        $('#barang').val('');
+		//$('#error_ID_BRG').text('');
+        $('#barang').css('border-color', '');
+        
+		//var error_ID_BRG = '';
+		var barang = '';
+		if($('#barang').val() == '')
+		{
+			//error_ID_BRG = 'ID Barang is required';
+			//$('#error_ID_BRG').text(error_ID_BRG);
+			$('#barang').css('border-color', '#cc0000');
+			barang = '';
+		}
+		else
+		{
+			//error_ID_BRG = '';
+			//$('#error_ID_BRG').text(error_ID_BRG);
+			$('#barang').css('border-color', '');
+            barang = $('#barang').val();
+
+            if($('#add').text() == 'Add')
+			{
+				count = count + 1;
+				output = '<tr id="row_'+count+'">';
+				output += '<td>'+barang+' <input type="hidden" name="hidden_ID_BRG[]" id="ID_BRG'+count+'" class="barang" value="'+barang+'" /></td>';
+				output += '<td><button type="button" name="remove_details" class="btn btn-danger btn-xs remove_details" id="'+count+'">Remove</button></td>';
+				output += '</tr>';
+				$('#user_data').append(output);
+			}
+			else
+			{
+				var row_id = $('#hidden_row_id').val();
+				output = '<td>'+barang+' <input type="hidden" name="hidden_ID_BRG[]" id="barang'+row_id+'" class="barang" value="'+barang+'" /></td>';
+				 output += '<td><button type="button" name="remove_details" class="btn btn-danger btn-xs remove_details" id="'+row_id+'">Remove</button></td>';
+				$('#row_'+row_id+'').html(output);
+			}
+		}	
+	});
+
+	$(document).on('click', '.remove_details', function(){
+		var row_id = $(this).attr("id");
+		if(confirm("Are you sure you want to remove this row data?"))
+		{
+			$('#row_'+row_id+'').remove();
+		}
+		else
+		{
+			return false;
+		}
+	});
+
+	$('#user_form').on('submit', function(event){
+		event.preventDefault();
+		var count_data = 0;
+		$('.ID_BRG').each(function(){
+			count_data = count_data + 1;
+		});
+		if(count_data > 0)
+		{
+			var form_data = $(this).serialize();
+			$.ajax({
+				url:"insert.php",
+				method:"POST",
+				data:form_data,
+				success:function(data)
+				{
+					$('#user_data').find("tr:gt(0)").remove();
+					$('#action_alert').html('<p>Data Inserted Successfully</p>');
+					$('#action_alert').dialog('open');
+				}
+			})
+		}
+		else
+		{
+			// $('#action_alert').html('<p>Please Add atleast one data</p>');
+			// $('#action_alert').dialog('open');
+		}
+	});
+
+
 });
 
 
@@ -137,13 +222,12 @@ function edit_perm_pembelian(ID_PERM_PEMBELIAN)
         success: function(data)
         {
             $('[name="ID_PERM_PEMBELIAN"]').val(data.ID_PERM_PEMBELIAN);
-            $('[name="ID_GDG"]').val(data.ID_GDG);
-            $('[name="CB_ID"]').val(data.CB_ID);
             $('[name="PP_NOMOR"]').val(data.PP_NOMOR);
+            $('[name="CB_ID"]').val(data.CB_ID);
             $('[name="PP_TGL"]').val(data.PP_TGL);
             $('[name="PP_TGL_BUTUH"]').val(data.PP_TGL_BUTUH);
             $('[name="PP_JENIS"]').val(data.PP_JENIS);
-            $('[name="PP_JENIS_NAMA"]').val(data.PP_JENIS_NAMA);
+            $('[name="ID_GDG"]').val(data.ID_GDG);
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
             $('.modal-title').text('Edit Permintaan Pembelian'); // Set title to Bootstrap modal title
 
@@ -233,36 +317,6 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
     }
     
 }
-// $(document).ready(function(){
-//         $('.add_cart').click(function(){
-//             var ID_BRG   = $(this).data("ID_BRG");
-//             var qty  = $(this).data("qty");
-//             $.ajax({
-//                 url : "<?php echo base_url();?>index.php/admin/C_perm_pembelian/add_to_cart",
-//                 method : "POST",
-//                 data : {ID_BRG: ID_BRG, qty: qty},
-//                 success: function(data){
-//                     $('#detail_cart').html(data);
-//                 }
-//             });
-//         });
- 
-//         // Load shopping cart
-//         $('#detail_cart').load("<?php echo base_url();?>index.php/admin/C_perm_pembelian/load_cart");
- 
-//         //Hapus Item Cart
-//         $(document).on('click','.hapus_cart',function(){
-//             var row_id=$(this).attr("id"); //mengambil row_id dari artibut id
-//             $.ajax({
-//                 url : "<?php echo base_url();?>index.php/admin/C_perm_pembelian/load_cart",
-//                 method : "POST",
-//                 data : {row_id : row_id},
-//                 success :function(data){
-//                     $('#detail_cart').html(data);
-//                 }
-//             });
-//         });
-//     });
 
 </script>
 
@@ -342,48 +396,40 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
                                     ?>
                                 </div>
                             </div><span class="help-block"></span>
-                            <?php echo form_close() ?>
-                            <!-- <div class="form-group">
+                            </form>
+			<br />
+			<form method="post" id="user_form">
+            <div class="form-group">
                                 <label class="control-label col-md-3">Barang</label>
                                 <div  class="col-md-6">
                                     <?php
-                                        $attr = '<select class="form-control show-tick" data-live-search="true">';
+                                        $attr = '<select class="form-control show-tick" data-live-search="true" id="barang">';
                                             '<option>';
                                                 echo form_dropdown('ID_BRG', $get3, $barang_selected, $attr);
                                             '</option>';
                                         '</select>';
                                     ?>
+                                  
                                 </div>
-                            </div><span class="help-block"></span>
-                            
-
-                            <div class="form-group">
-                            <label class="control-label col-md-3">Qty</label>
-                            <div class="col-md-4">
-                                <div class="form-line">
-                                    <input name="qty"  placeholder="e.g :30" class="form-control" type="text">
-                                </div>
-                            <span class="help-block"></span>
+                                <div align="right" style="margin-bottom:5px;">
+				<button type="button" name="add" id="add" class="btn btn-success btn-xs">Add</button>
+			</div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                        <button class="add_cart btn btn-success btn-block">Tambah Barang</button>
-                        </div>
-                </form>
+                            
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered" id="user_data">
+						<tr>
+							<th>No</th>
+							<th>Deskripsi</th>
+							<th>Remove</th>
+						</tr>
+					</table>
+				</div>
+				<div align="center">
+					<input type="submit" name="insert" id="insert" class="btn btn-primary" value="Insert" />
+				</div>
+			</form>  
             </div>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Barang</th>
-                        <th>Qty</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="detail_cart">
- 
-                </tbody>
-                 
-            </table> -->
             <div class="modal-footer">
                 <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Save</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>

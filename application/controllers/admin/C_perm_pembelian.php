@@ -145,48 +145,28 @@ class C_perm_pembelian extends CI_Controller {
 			exit();
 		}
 	}
-	function add_to_cart(){ //fungsi Add To Cart
-        $data = array(
-            'ID_BRG' => $this->input->post('ID_BRG'), 
-            'qty' => $this->input->post('qty'), 
-        );
-        $this->pp->insert($data);
-        echo $this->show_cart(); //tampilkan cart setelah added
 	}
-	function show_cart(){ //Fungsi untuk menampilkan Cart
-        $output = '';
-        $no = 0;
-        foreach ($this->pp->contents() as $items) {
-            $no++;
-            $output .='
-                <tr>
-                    <td>'.$items['ID_BRG'].'</td>
-                    <td>'.$items['qty'].'</td>
-                   <td><button type="button" id="'.$items['rowid'].'" class="hapus_cart btn btn-danger btn-xs">Batal</button></td>
-                </tr>
-            ';
-        }
-        $output .= '
-            <tr>
-                <th colspan="3">Total</th>
-                <th colspan="2">'.'Rp '.number_format($this->cart->total()).'</th>
-            </tr>
-        ';
-        return $output;
-    }
- 
-    function load_cart(){ //load data cart
-        echo $this->show_cart();
-    }
- 
-    function hapus_cart(){ //fungsi untuk menghapus item cart
-        $data = array(
-            'rowid' => $this->input->post('row_id'), 
-            'qty' => 0, 
-        );
-        $this->pp->update($data);
-        echo $this->show_cart();
-    }
+	function add(){
+		$this->load->helper('url'); 
+		// load model dan form helper
+	   $this->load->model('perm_pembelian_model');
+	   $this->load->helper('form_helper');
+	   //$data['PP_NOMOR'] = $this->pp->kode();
+	   $data = array(
+		   'action' => site_url('admin/C_perm_pembelian/create_action'),
+		   'get' => $this->pp->get_idcabang(),
+		   'get2' => $this->pp->get_idgdg(),
+		   'get3' => $this->pp->get_idbrg(),
+		   'kode' => $this->pp->kode(),
+		   'cabang_selected' => $this->input->post('CB_ID') ? $this->input->post('CB_NAMA') : '', // untuk edit ganti '' menjadi data dari database misalnya $row->provinsi
+		   'gudang_selected' => $this->input->post('ID_GDG') ? $this->input->post('NAMA_GDG') : '', // untuk edit ganti '' menjadi data dari database misalnya $row->provinsi
+		   'barang_selected' => $this->input->post('ID_BRG') ? $this->input->post('NAMA_BRG') : '', // untuk edit ganti '' menjadi data dari database misalnya $row->provinsi
+		   
+   );
+		$this->load->view('admin/layout/header');
+        $this->load->view('admin/layout/footer');
+		$this->load->view('admin/perm_pembelian/form',$data);
+	  }
 
 }
 

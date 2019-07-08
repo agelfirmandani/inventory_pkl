@@ -51,6 +51,8 @@
     
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="<?php echo base_url('assets/css/themes/all-themes.css');?>" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body class="theme-red">
