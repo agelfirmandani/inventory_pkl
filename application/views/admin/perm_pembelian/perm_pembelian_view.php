@@ -113,27 +113,18 @@ $(document).ready(function () {
 
 
 	$('#add').click(function(){
-        $('#barang').val('');
-		//$('#error_ID_BRG').text('');
-        $('#barang').css('border-color', '');
-        
-		//var error_ID_BRG = '';
 		var barang = '';
 		if($('#barang').val() == '')
 		{
-			//error_ID_BRG = 'ID Barang is required';
-			//$('#error_ID_BRG').text(error_ID_BRG);
 			$('#barang').css('border-color', '#cc0000');
 			barang = '';
 		}
 		else
 		{
-			//error_ID_BRG = '';
-			//$('#error_ID_BRG').text(error_ID_BRG);
 			$('#barang').css('border-color', '');
             barang = $('#barang').val();
 
-            if($('#add').text() == 'Add')
+            if($('#add'))
 			{
 				count = count + 1;
 				output = '<tr id="row_'+count+'">';
@@ -403,7 +394,7 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
                                 <label class="control-label col-md-3">Barang</label>
                                 <div  class="col-md-6">
                                     <?php
-                                        $attr = '<select class="form-control show-tick" data-live-search="true" id="barang">';
+                                        $attr = '<select id="barang" class="form-control show-tick" data-live-search="true">';
                                             '<option>';
                                                 echo form_dropdown('ID_BRG', $get3, $barang_selected, $attr);
                                             '</option>';
