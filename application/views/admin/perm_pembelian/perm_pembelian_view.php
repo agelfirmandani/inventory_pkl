@@ -114,21 +114,29 @@ $(document).ready(function () {
 
 	$('#add').click(function(){
 		var barang = '';
-		if($('#barang').val() == '')
+        var qty='';
+		if($('#barang').val() == '' || $('#qty').val() == '' )
 		{
 			$('#barang').css('border-color', '#cc0000');
 			barang = '';
+            $('#qty').css('border-color', '#cc0000');
+			qty = '';
 		}
 		else
 		{
 			$('#barang').css('border-color', '');
             barang = $('#barang').val();
 
+            $('#qty').css('border-color', '');
+            qty = $('#qty').val();
+            
             if($('#add'))
-			{
-				count = count + 1;
+			{   
+                count = count + 1;
 				output = '<tr id="row_'+count+'">';
+				output += '<td>'+count+'</td>';
 				output += '<td>'+barang+' <input type="hidden" name="hidden_ID_BRG[]" id="ID_BRG'+count+'" class="barang" value="'+barang+'" /></td>';
+				output += '<td>'+qty+'<input type="hidden" name="hidden_qty[]" id="qty'+count+'" class="qty" value="'+qty+'" /></td>';
 				output += '<td><button type="button" name="remove_details" class="btn btn-danger btn-xs remove_details" id="'+count+'">Remove</button></td>';
 				output += '</tr>';
 				$('#user_data').append(output);
@@ -136,8 +144,10 @@ $(document).ready(function () {
 			else
 			{
 				var row_id = $('#hidden_row_id').val();
-				output = '<td>'+barang+' <input type="hidden" name="hidden_ID_BRG[]" id="barang'+row_id+'" class="barang" value="'+barang+'" /></td>';
-				 output += '<td><button type="button" name="remove_details" class="btn btn-danger btn-xs remove_details" id="'+row_id+'">Remove</button></td>';
+                 output = '<td>'+count+'</td>';
+				 output += '<td>'+barang+' <input type="hidden" name="hidden_ID_BRG[]" id="barang'+row_id+'" class="barang" value="'+barang+'" /></td>';
+                 output += '<td>'+qty+' <input type="hidden" name="hidden_qty[]" id="qty'+count+'" class="qty" value="'+qty+'" /></td>';
+                 output += '<td><button type="button" name="remove_details" class="btn btn-danger btn-xs remove_details" id="'+row_id+'">Remove</button></td>';
 				$('#row_'+row_id+'').html(output);
 			}
 		}	
@@ -158,7 +168,7 @@ $(document).ready(function () {
 	$('#user_form').on('submit', function(event){
 		event.preventDefault();
 		var count_data = 0;
-		$('.ID_BRG').each(function(){
+		$('.barang').each(function(){
 			count_data = count_data + 1;
 		});
 		if(count_data > 0)
@@ -172,13 +182,12 @@ $(document).ready(function () {
 				{
 					$('#user_data').find("tr:gt(0)").remove();
 					$('#action_alert').html('<p>Data Inserted Successfully</p>');
-					$('#action_alert').dialog('open');
 				}
 			})
 		}
 		else
 		{
-			// $('#action_alert').html('<p>Please Add atleast one data</p>');
+			$('#action_alert').html('<p>Please Add atleast one data</p>');
 			// $('#action_alert').dialog('open');
 		}
 	});
@@ -390,6 +399,7 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
                             </form>
 			<br />
 			<form method="post" id="user_form">
+            
             <div class="form-group">
                                 <label class="control-label col-md-3">Barang</label>
                                 <div  class="col-md-6">
@@ -402,6 +412,16 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
                                     ?>
                                   
                                 </div>
+                                <div class="form-group">
+                            <label class="control-label col-md-3">Qty</label>
+                            <div class="col-md-4">
+                                <div class="form-line">
+                                <input type="text" name="qty" id="qty" class="form-control" />
+                                </div>
+                            <span class="help-block"></span>
+                            </div>
+                        </div>
+                                <input type="hidden" name="row_id" id="hidden_row_id" />
                                 <div align="right" style="margin-bottom:5px;">
 				<button type="button" name="add" id="add" class="btn btn-success btn-xs">Add</button>
 			</div>
@@ -412,6 +432,7 @@ function delete_perm_pembelian(ID_PERM_PEMBELIAN)
 						<tr>
 							<th>No</th>
 							<th>Deskripsi</th>
+							<th>Qty</th>
 							<th>Remove</th>
 						</tr>
 					</table>

@@ -49,9 +49,9 @@ class Perm_pembelian_model extends CI_Model {
 	}
 	function get_idbrg()
     {
-        // ambil data dari db
-        $this->db->order_by('ID_BRG', 'asc');
-        $result = $this->db->get('tb_barang');
+		// ambil data dari db
+		$this->db->order_by('ID_BRG', 'asc');
+		$result = $this->db->get('tb_barang');
         // bikin array
         // please select berikut ini merupakan tambahan saja agar saat pertama
         // diload akan ditampilkan text please select.
